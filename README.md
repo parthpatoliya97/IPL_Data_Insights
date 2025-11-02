@@ -1,1 +1,480 @@
 # IPL_Data_Insights
+
+
+
+
+top batsman in each season
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE get_top_batsmen_by_season(IN in_season INT)
+BEGIN
+    WITH season_stats AS (
+        SELECT
+            YEAR(STR_TO_DATE(dms.matchDate, '%b %d,%Y')) AS IPL_Season,
+            fbs.batsmanName,
+            SUM(fbs.runs) AS total_runs,
+            COUNT(*) AS total_innings
+        FROM fact_bating_summary fbs
+        JOIN dim_match_summary dms
+            ON fbs.match_id = dms.match_id
+        GROUP BY IPL_Season, fbs.batsmanName
+        HAVING SUM(fbs.balls) >= 60
+    ),
+    season_average AS (
+        SELECT
+            IPL_Season,
+            batsmanName,
+            total_runs,
+            total_innings,
+            DENSE_RANK() OVER (
+                PARTITION BY IPL_Season
+                ORDER BY total_runs DESC
+            ) AS ranking
+        FROM season_stats
+    )
+    SELECT 
+        IPL_Season,
+        batsmanName,
+        total_innings,
+        total_runs
+    FROM season_average
+    WHERE ranking <= 10
+      AND (in_season IS NULL OR IPL_Season = in_season)
+    ORDER BY IPL_Season, total_runs DESC;
+END$$
+
+DELIMITER ;
+
+```
+
+top 10 with each season batting average
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE get_top_batting_average_by_season(IN in_season INT)
+BEGIN
+    WITH season_stats AS (
+        SELECT
+            YEAR(STR_TO_DATE(dms.matchDate, '%b %d,%Y')) AS IPL_Season,
+            fbs.batsmanName,
+            SUM(fbs.runs) AS total_runs,
+            SUM(fbs.balls) AS balls_faced,
+            COUNT(*) AS total_innings,
+            COUNT(CASE WHEN fbs.`out/not_out` = 'out' THEN 1 END) AS total_outs
+        FROM fact_bating_summary fbs
+        JOIN dim_match_summary dms
+            ON fbs.match_id = dms.match_id
+        GROUP BY IPL_Season, fbs.batsmanName
+        HAVING SUM(fbs.balls) >= 60
+    ),
+    season_average AS (
+        SELECT
+            IPL_Season,
+            batsmanName,
+            total_runs,
+            balls_faced,
+            total_innings,
+            total_outs,
+            ROUND(
+                CASE WHEN total_outs = 0 THEN total_runs 
+                     ELSE total_runs / total_outs END,
+            2) AS batting_average,
+            DENSE_RANK() OVER (
+                PARTITION BY IPL_Season
+                ORDER BY 
+                    CASE WHEN total_outs = 0 THEN total_runs 
+                         ELSE total_runs / total_outs END DESC
+            ) AS ranking
+        FROM season_stats
+    )
+    SELECT 
+        IPL_Season,
+        batsmanName,
+        total_innings,
+        total_runs,
+        batting_average
+    FROM season_average
+    WHERE ranking <= 10
+      AND (in_season IS NULL OR IPL_Season = in_season)
+    ORDER BY IPL_Season, batting_average DESC;
+END$$
+
+DELIMITER ;
+
+```
+
+
+batsman with batting strike rate in each season
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE GetTopStrikeRateBySeason(IN season_year INT)
+BEGIN
+    WITH season_stats AS (
+        SELECT
+            YEAR(STR_TO_DATE(dms.matchDate, '%b %d,%Y')) AS IPL_Season,
+            fbs.batsmanName,
+            COUNT(*) AS total_innings,
+            SUM(fbs.runs) AS total_runs,
+            SUM(fbs.balls) AS balls_faced
+        FROM fact_bating_summary fbs
+        JOIN dim_match_summary dms
+            ON fbs.match_id = dms.match_id
+        GROUP BY IPL_Season, fbs.batsmanName
+        HAVING SUM(fbs.balls) >= 60
+    ),
+    season_SR AS (
+        SELECT
+            IPL_Season,
+            batsmanName,
+            total_innings,
+            total_runs,
+            balls_faced,
+            ROUND(
+                CASE
+                    WHEN balls_faced = 0 THEN 0
+                    ELSE (total_runs / balls_faced) * 100
+                END, 2
+            ) AS batting_strike_rate,
+            DENSE_RANK() OVER (
+                PARTITION BY IPL_Season
+                ORDER BY
+                    CASE
+                        WHEN balls_faced = 0 THEN 0
+                        ELSE (total_runs / balls_faced) * 100
+                    END DESC
+            ) AS ranking
+        FROM season_stats
+    )
+    SELECT IPL_Season,batsmanName,total_innings,total_runs,batting_strike_rate
+    FROM season_SR
+    WHERE ranking <= 10
+      AND (in_season IS NULL OR IPL_Season = in_season)
+    ORDER BY batting_strike_rate DESC;
+END $$
+
+DELIMITER ;
+
+```
+
+procedure top wicket takers
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE top_wicket_takers(IN season_year INT)
+BEGIN
+WITH season_stats AS (
+    SELECT
+        YEAR(STR_TO_DATE(dms.matchDate,'%b %d,%Y')) AS IPL_Season,
+        fbs.bowlerName,
+        SUM(fbs.wickets) AS total_wickets
+    FROM fact_bowling_summary fbs
+    JOIN dim_match_summary dms ON fbs.match_id=dms.match_id
+    GROUP BY IPL_Season, fbs.bowlerName
+    HAVING SUM(fbs.overs*6) >= 60
+),
+season_rank AS (
+    SELECT *,
+           DENSE_RANK() OVER (PARTITION BY IPL_Season ORDER BY total_wickets DESC) AS ranking
+    FROM season_stats
+)
+SELECT IPL_Season,bowlerName,total_wickets
+FROM season_rank
+WHERE ranking <= 10
+      AND (in_season IS NULL OR IPL_Season = in_season)
+ORDER BY total_wickets DESC;
+END$$
+
+DELIMITER ;
+
+```
+
+procedure bowling average
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE sp_best_bowling_avg(IN season_year INT)
+BEGIN
+WITH season_stats AS (
+    SELECT
+        YEAR(STR_TO_DATE(dms.matchDate,'%b %d,%Y')) AS IPL_Season,
+        fbs.bowlerName,
+        SUM(fbs.wickets) AS total_wickets,
+        SUM(fbs.runs) AS total_runs_conceded,
+        SUM(fbs.overs*6) AS balls_bowled
+    FROM fact_bowling_summary fbs
+    JOIN dim_match_summary dms ON fbs.match_id=dms.match_id
+    GROUP BY IPL_Season, fbs.bowlerName
+    HAVING SUM(fbs.overs*6) >= 60
+),
+avg_rank AS (
+    SELECT *,
+           ROUND(
+               CASE WHEN total_wickets = 0 THEN NULL
+                    ELSE total_runs_conceded/total_wickets END, 2) AS bowling_average,
+           DENSE_RANK() OVER (
+               PARTITION BY IPL_Season
+               ORDER BY CASE WHEN total_wickets = 0 THEN 999
+                             ELSE total_runs_conceded/total_wickets END
+           ) AS ranking
+    FROM season_stats
+)
+SELECT IPL_Season,bowlerName,total_wickets,bowling_average
+FROM avg_rank
+WHERE ranking <= 10
+      AND (in_season IS NULL OR IPL_Season = in_season)
+ORDER BY bowling_average ASC;
+END$$
+
+DELIMITER ;
+
+```
+procedure economy rate
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE sp_best_economy(IN season_year INT)
+BEGIN
+WITH season_stats AS (
+    SELECT
+        YEAR(STR_TO_DATE(dms.matchDate,'%b %d,%Y')) AS IPL_Season,
+        fbs.bowlerName,
+        COUNT(*) AS total_matches,
+        SUM(fbs.wickets) AS total_wickets,
+        SUM(fbs.runs) AS total_runs_conceded,
+        SUM(fbs.overs) AS total_overs
+    FROM fact_bowling_summary fbs
+    JOIN dim_match_summary dms ON fbs.match_id=dms.match_id
+    GROUP BY IPL_Season, fbs.bowlerName
+    HAVING SUM(fbs.overs*6) >= 60
+),
+eco_rank AS (
+    SELECT *,
+           ROUND(total_runs_conceded/total_overs,2) AS economy_rate,
+           DENSE_RANK() OVER (PARTITION BY IPL_Season ORDER BY total_runs_conceded/total_overs) AS ranking
+    FROM season_stats
+)
+SELECT IPL_Season,bowlerName,total_matches,total_wickets,economy_rate
+FROM eco_rank
+WHERE ranking <= 10
+      AND (in_season IS NULL OR IPL_Season = in_season)
+ORDER BY economy_rate ASC;
+END$$
+
+DELIMITER ;
+
+```
+
+procedure boundary percentage
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE sp_boundary_percent(IN season_year INT)
+BEGIN
+WITH season_stats AS (
+    SELECT
+        YEAR(STR_TO_DATE(dms.matchDate,'%b %d,%Y')) AS IPL_Season,
+        fbs.batsmanName,
+        SUM(fbs.runs) AS total_runs,
+        SUM(fbs.`4s`*4) AS runs_from_4s,
+        SUM(fbs.`6s`*6) AS runs_from_6s
+    FROM fact_bating_summary fbs
+    JOIN dim_match_summary dms ON fbs.match_id=dms.match_id
+    GROUP BY IPL_Season,fbs.batsmanName
+    HAVING SUM(fbs.balls)>=60
+),
+bdy_rank AS (
+    SELECT *,
+           ROUND((runs_from_4s + runs_from_6s)/total_runs*100,2) AS boundary_percentage,
+           DENSE_RANK() OVER (PARTITION BY IPL_Season 
+                              ORDER BY (runs_from_4s + runs_from_6s)/total_runs DESC) AS ranking
+    FROM season_stats
+)
+SELECT IPL_Season,batsmanName,total_runs,boundary_percentage
+FROM bdy_rank
+WHERE  ranking <= 5 
+      AND (in_season IS NULL OR IPL_Season = in_season)
+ORDER BY boundary_percentage DESC;
+END$$
+
+DELIMITER ;
+
+```
+
+procedure dot ball%
+```sql
+DELIMITER $$
+
+CREATE PROCEDURE sp_dot_ball_percent(IN season_year INT)
+BEGIN
+WITH stats AS (
+    SELECT
+        YEAR(STR_TO_DATE(dms.matchDate,'%b %d,%Y')) AS IPL_Season,
+        fbs.bowlerName,
+        SUM(fbs.wickets) AS total_wickets,
+        SUM(fbs.overs*6) AS total_balls,
+        SUM(fbs.`0s`) AS dot_balls
+    FROM fact_bowling_summary fbs
+    JOIN dim_match_summary dms ON fbs.match_id=dms.match_id
+    GROUP BY IPL_Season,fbs.bowlerName
+    HAVING SUM(fbs.overs*6)>=60
+),
+dot_rank AS (
+    SELECT *,
+           ROUND(dot_balls/total_balls*100,2) AS dot_ball_percentage,
+           DENSE_RANK() OVER (PARTITION BY IPL_Season ORDER BY dot_balls/total_balls DESC) AS ranking
+    FROM stats
+)
+SELECT IPL_Season,bowlerName,total_wickets,total_balls,dot_balls,dot_ball_percentage
+FROM dot_rank
+WHERE ranking <= 5 
+      AND (in_season IS NULL OR IPL_Season = in_season)
+ORDER BY dot_ball_percentage DESC;
+END$$
+
+DELIMITER ;
+
+```
+
+
+Top 4 teams based on past 3 years winning %.
+```sql
+  WITH all_matches AS (
+    SELECT
+        team1 AS team,
+        CASE WHEN team1 = winner THEN 1 ELSE 0 END AS win_flag
+    FROM dim_match_summary
+
+    UNION ALL
+
+    SELECT
+        team2 AS team,
+        CASE WHEN team2 = winner THEN 1 ELSE 0 END AS win_flag
+    FROM dim_match_summary
+),
+team_stats AS (
+    SELECT
+        team,
+        COUNT(*) AS matches_played,
+        SUM(win_flag) AS wins,
+        ROUND((SUM(win_flag) / COUNT(*)) * 100, 2) AS win_percentage
+    FROM all_matches
+    GROUP BY team
+)
+SELECT *
+FROM team_stats
+ORDER BY win_percentage DESC
+LIMIT 4;
+```
+
+top 3 all rounders
+```sql
+WITH batting AS (
+    SELECT
+        dp.name AS Player,
+        count(*) AS total_matches,
+        SUM(fb.runs) AS Total_Runs,
+        SUM(fb.balls) AS Total_Balls,
+        ROUND((SUM(fb.runs) / NULLIF(SUM(fb.balls),0)) * 100, 2) AS Batting_SR
+    FROM fact_bating_summary fb
+    JOIN dim_players dp
+        ON fb.batsmanName = dp.name
+    WHERE dp.playingRole = 'Allrounder'
+    GROUP BY dp.name
+    HAVING SUM(fb.balls) >= 60 and count(*)>15
+),
+
+bowling AS (
+    SELECT
+        dp.name AS Player,
+        SUM(fb.wickets) AS Total_Wickets,
+        SUM(fb.runs) AS Runs_Conceded,
+        SUM(fb.overs) AS Overs,
+        SUM(fb.overs * 6) AS Balls_Bowled,
+        ROUND(SUM(fb.runs) / NULLIF(SUM(fb.wickets),0), 2) AS Bowling_Avg,
+        ROUND(SUM(fb.runs) / NULLIF(SUM(fb.overs),0), 2) AS Economy
+    FROM fact_bowling_summary fb
+    JOIN dim_players dp
+        ON fb.bowlerName = dp.name
+    WHERE dp.playingRole = 'Allrounder'
+    GROUP BY dp.name
+    HAVING SUM(fb.overs * 6) >= 60
+       AND SUM(fb.wickets) > 0 AND count(*)>15
+),
+
+combined AS (
+    SELECT
+        b.Player,
+        b.total_matches,
+        b.Total_Runs,
+        b.Batting_SR,
+        bw.Total_Wickets,
+        bw.Bowling_Avg,
+        bw.Economy,
+        ROUND((bw.Bowling_Avg * bw.Economy) / b.Batting_SR, 3) AS Allrounder_Score
+    FROM batting b
+    JOIN bowling bw
+        ON b.Player = bw.Player
+    WHERE b.Batting_SR IS NOT NULL
+      AND bw.Bowling_Avg IS NOT NULL
+)
+
+SELECT *
+FROM combined
+ORDER BY Allrounder_Score ASC
+LIMIT 5;
+```
+
+orange cap
+```sql
+-- orange cap
+WITH cte AS (
+    SELECT
+        YEAR(STR_TO_DATE(dms.matchDate, '%b %d,%Y')) AS IPL_Season,
+        fbs.batsmanName AS Batsman_Name,
+        SUM(fbs.runs) AS Total_Runs
+    FROM fact_bating_summary fbs
+    JOIN dim_match_summary dms
+        ON fbs.match_id = dms.match_id
+    GROUP BY
+        YEAR(STR_TO_DATE(dms.matchDate, '%b %d,%Y')),
+        fbs.batsmanName
+),
+
+orange_cap AS (
+    SELECT
+        IPL_Season,
+        Batsman_Name,
+        Total_Runs,
+        DENSE_RANK() OVER (PARTITION BY IPL_Season ORDER BY Total_Runs DESC) AS ranking
+    FROM cte
+)
+
+SELECT IPL_Season,Batsman_Name,Total_Runs
+FROM orange_cap
+WHERE ranking = 1 and IPL_Season is not null
+ORDER BY IPL_Season
+```
+
+
+purple cap
+```sql
+with cte as(
+select year(str_to_date(dms.matchDate,'%b %d,%Y')) as IPL_Season,
+       fbs.bowlerName as Bowler_Name,
+       sum(fbs.wickets) as Total_wickets
+from fact_bowling_summary fbs
+join dim_match_summary dms
+on fbs.match_id=dms.match_id
+group by year(str_to_date(dms.matchDate,'%b %d,%Y')),bowlerName),
+purple_cap as(
+select IPL_Season,Bowler_Name,Total_wickets,dense_rank() over (partition by IPL_Season order by Total_wickets desc) as ranking
+from cte)
+select IPL_Season,Bowler_Name,Total_wickets
+from  purple_cap
+where ranking=1 and IPL_Season is not null
+order by IPL_Season
+```
+
+
