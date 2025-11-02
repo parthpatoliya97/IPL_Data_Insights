@@ -1,0 +1,52 @@
+[
+  {
+    "Player": "AndreRussell",
+    "total_matches": 35,
+    "Total_Runs": 745,
+    "Batting_SR": 159.19,
+    "Total_Wickets": 35,
+    "Bowling_Avg": 18.23,
+    "Economy": 10.32,
+    "Allrounder_Score": 1.182
+  },
+  {
+    "Player": "RavindraJadeja",
+    "total_matches": 34,
+    "Total_Runs": 533,
+    "Batting_SR": 137.73,
+    "Total_Wickets": 37,
+    "Bowling_Avg": 27.41,
+    "Economy": 7.46,
+    "Allrounder_Score": 1.485
+  },
+  {
+    "Player": "KrunalPandya",
+    "total_matches": 38,
+    "Total_Runs": 514,
+    "Batting_SR": 118.98,
+    "Total_Wickets": 24,
+    "Bowling_Avg": 35.13,
+    "Economy": 7.45,
+    "Allrounder_Score": 2.2
+  },
+  {
+    "Player": "HardikPandya",
+    "total_matches": 41,
+    "Total_Runs": 960,
+    "Batting_SR": 130.43,
+    "Total_Wickets": 11,
+    "Bowling_Avg": 40.91,
+    "Economy": 8.14,
+    "Allrounder_Score": 2.553
+  },
+  {
+    "Player": "LalitYadav",
+    "total_matches": 19,
+    "Total_Runs": 295,
+    "Batting_SR": 106.12,
+    "Total_Wickets": 10,
+    "Bowling_Avg": 36.90,
+    "Economy": 8.2,
+    "Allrounder_Score": 2.851
+  }
+]
