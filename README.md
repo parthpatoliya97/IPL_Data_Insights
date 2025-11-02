@@ -1,5 +1,51 @@
 # IPL 2021-2023 Data Insights
 
+## Quick Refresh to Basic Cricket Metrics :-
+### 🏏Batting Average
+
+#### Meaning: On average, how many runs a batter scores before getting out.
+- Batting Average = Total Runs Scored / Total Times Out
+- Higher average = consistent scorer.
+
+###⚡Strike Rate (SR)
+
+#### Meaning: How fast a batter scores.
+- Strike Rate = (Total Runs / Total Balls Faced) × 100
+- Higher SR = aggressive and impactful batter.
+
+### 🎯 Boundary Percentage
+
+#### Meaning: What percentage of total runs came from fours & sixes.
+- Boundary % = (Runs from 4s & 6s / Total Runs) × 100
+- Shows how attacking a batter is.
+
+### ⛔ Dot Ball Percentage by Batter
+
+#### Meaning: Percentage of balls where batter scored 0 runs.
+- Dot Ball % = (Dot Balls / Total Balls Faced) × 100
+- Lower dot-ball % means better strike rotation.
+
+### 🏹 Bowling Average
+
+#### Meaning: How many runs a bowler concedes per wicket taken.
+- Bowling Average = Runs Conceded / Wickets Taken
+- Lower average = better wicket-taking bowler.
+
+### 💰 Economy Rate
+
+#### Meaning: Runs conceded per over by a bowler.
+- Economy Rate = Runs Conceded / Overs Bowled
+- Shows how economical the bowler is. Lower is better.
+
+### 🟧 Orange Cap
+
+#### Meaning: Batter with the most total runs in a season.
+
+### 🟪 Purple Cap
+
+#### Meaning: Bowler with most wickets in a season.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 ### 1.) Top 10 Batsman with Most Runs over last 3 Years
 ```sql
@@ -668,6 +714,11 @@ LIMIT 4;
 ![winning percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_4_team_by_winning_%25_last_3_years.png?raw=true)
 
 ### 20.) Top 5 All-Rounders
+
+- All-rounder Score = (Bowling Avg * Economy Rate) / Batting Strike Rate
+- All-rounder Score (lower is better bowling, higher is better batting)
+- Lower score = better all-rounder.
+
 ```sql
 WITH batting AS (
     SELECT
