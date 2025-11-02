@@ -47,7 +47,6 @@ END$$
 DELIMITER ;
 
 ```
-![top 10 batsman in last 3 years by runs](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/Top_10_Batsamn_in_lat_3_years.png?raw=true)
 ![2021 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_batsman_based_on_runs.png?raw=true)
 ![2022 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_based_on_runs.png?raw=true)
 ![2023 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_runs.png?raw=true)
@@ -107,7 +106,9 @@ END$$
 DELIMITER ;
 
 ```
-![top 10batsman by batting average last 3 years]()
+![2021 top 10 batting average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_TOP_10bastam_based_on_batting_average.png?raw=true)
+![2022 top 10 batting average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_on_batting_average.png?raw=true)
+![2023](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_batting_average.png?raw=true)
 
 
 batsman with batting strike rate in each season
@@ -162,6 +163,9 @@ END $$
 DELIMITER ;
 
 ```
+![2021 top 10 strike rate](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_batsman_based_on_batting_strike_rate.png?raw=true)
+![2022 top 10 strike rate](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_based_on_batting_strike_rate.png?raw=true)
+![2023 top 10 strike rate](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_batting_strike_rate.png?raw=true)
 
 procedure top wicket takers
 ```sql
@@ -194,6 +198,9 @@ END$$
 DELIMITER ;
 
 ```
+![2021 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_bowlers.png?raw=true)
+![2022 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_bowlers.png?raw=true)
+![2023 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_bowlers.png?raw=true)
 
 procedure bowling average
 ```sql
@@ -235,6 +242,10 @@ END$$
 DELIMITER ;
 
 ```
+![2021 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_best_bowling_average_bowlers.png?raw=true)
+![2022 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_best_bowling_Average_bowlers.png?raw=true)
+![2023 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_best_bowling_average_bowlers.png?raw=true)
+
 procedure economy rate
 ```sql
 DELIMITER $$
@@ -270,6 +281,10 @@ END$$
 DELIMITER ;
 
 ```
+![2021 top 10 economy](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_best_economical_bowlers.png?raw=true)
+![2022 top 10 economy](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_best_economical_bowlers.png?raw=true)
+![2023 top 10 economy](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_best_economical_bowlers.png?raw=true)
+
 
 procedure boundary percentage
 ```sql
@@ -306,6 +321,10 @@ END$$
 DELIMITER ;
 
 ```
+![2021 top 10 boundary percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_batsman_with_boundary_percent.png?raw=true)
+![2022 top 10 boundary percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_with_boundary_percent.png?raw=true)
+![2023 top 10 boundary percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_with_boundary_percent.png?raw=true)
+
 
 procedure dot ball%
 ```sql
@@ -341,6 +360,9 @@ END$$
 DELIMITER ;
 
 ```
+![2021 top 5 dot ball percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_5_dot_ball_percent_bowlers.png?raw=true)
+![2022 top 5 dot ball percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_5_dot_ball%25.png?raw=true)
+![2023 top 5 dot ball percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_balls_percent.png?raw=true)
 
 
 Top 4 teams based on past 3 years winning %.
@@ -372,6 +394,7 @@ FROM team_stats
 ORDER BY win_percentage DESC
 LIMIT 4;
 ```
+![winning percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_4_team_by_winning_%25_last_3_years.png?raw=true)
 
 top 3 all rounders
 ```sql
@@ -430,6 +453,7 @@ FROM combined
 ORDER BY Allrounder_Score ASC
 LIMIT 5;
 ```
+![top all rounders](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_5_all_rounders.png?raw=true)
 
 orange cap
 ```sql
@@ -461,7 +485,7 @@ FROM orange_cap
 WHERE ranking = 1 and IPL_Season is not null
 ORDER BY IPL_Season
 ```
-
+![orange cap](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/orange_cap.png?raw=true)
 
 purple cap
 ```sql
@@ -481,5 +505,6 @@ from  purple_cap
 where ranking=1 and IPL_Season is not null
 order by IPL_Season
 ```
+![purple cap](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/purple_cap.png?raw=true)
 
 
