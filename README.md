@@ -1,7 +1,19 @@
 # IPL_Data_Insights
 
 
+top 10 batsman last 3 years
+```sql
 
+select
+    batsmanName,
+    count(*) as total_matches,
+    sum(runs) as total_runs
+from fact_bating_summary
+group by batsmanName
+order by total_runs desc
+limit 10;
+```
+![top 10 batsman](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_with_most_runs_last_3_years_with%20_total_matches.png?raw=true)
 
 top batsman in each season
 ```sql
@@ -50,6 +62,46 @@ DELIMITER ;
 ![2021 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_batsman_based_on_runs.png?raw=true)
 ![2022 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_based_on_runs.png?raw=true)
 ![2023 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_runs.png?raw=true)
+
+top 10 batsman best batting average over 30 matches
+```sql
+WITH season_stats AS (
+    SELECT
+        fbs.batsmanName,
+        SUM(fbs.runs) AS total_runs,
+        SUM(fbs.balls) AS balls_faced,
+        COUNT(*) AS total_innings,
+        COUNT(CASE WHEN fbs.`out/not_out` = 'out' THEN 1 END) AS total_outs
+    FROM fact_bating_summary fbs
+    JOIN dim_match_summary dms
+        ON fbs.match_id = dms.match_id
+    GROUP BY fbs.batsmanName
+    HAVING SUM(fbs.balls) >= 60 and count(*)>30
+),
+season_average AS (
+    SELECT
+        batsmanName,
+        total_runs,
+        balls_faced,
+        total_innings,
+        total_outs,
+        ROUND(
+            CASE WHEN total_outs = 0 THEN total_runs ELSE total_runs / total_outs END,
+            2
+        ) AS batting_average,
+        DENSE_RANK() OVER (
+            ORDER BY
+                CASE WHEN total_outs = 0 THEN total_runs ELSE total_runs / total_outs END DESC
+        ) AS ranking
+    FROM season_stats
+)
+SELECT batsmanName,total_innings,total_runs,batting_average
+FROM season_average
+WHERE ranking <= 10
+ORDER BY batting_average DESC;
+```
+![top 10 batting average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_batting_average_30_matches.png?raw=true)
+
 
 top 10 with each season batting average
 ```sql
@@ -111,6 +163,48 @@ DELIMITER ;
 ![2023](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_batting_average.png?raw=true)
 
 
+top 10 batsman batting strike rate 30 matches
+```sql
+WITH season_stats AS (
+    SELECT
+        fbs.batsmanName,
+        COUNT(*) AS total_innings,
+        SUM(fbs.runs) AS total_runs,
+        SUM(fbs.balls) AS balls_faced
+    FROM fact_bating_summary fbs
+    JOIN dim_match_summary dms
+        ON fbs.match_id = dms.match_id
+    GROUP BY fbs.batsmanName
+    HAVING SUM(fbs.balls) >= 60 and count(*)>30
+),
+season_SR AS (
+    SELECT
+        batsmanName,
+        total_innings,
+        total_runs,
+        balls_faced,
+        ROUND(
+            CASE
+                WHEN balls_faced = 0 THEN 0
+                ELSE (total_runs / balls_faced) * 100
+            END, 2
+        ) AS batting_strike_rate,
+        DENSE_RANK() OVER (
+            ORDER BY
+                CASE
+                    WHEN balls_faced = 0 THEN 0
+                    ELSE (total_runs / balls_faced) * 100
+                END DESC
+        ) AS ranking
+    FROM season_stats
+)
+SELECT batsmanName,total_innings,total_runs,batting_strike_rate
+FROM season_SR
+WHERE ranking <= 10
+ORDER BY  batting_strike_rate DESC;
+```
+![top 10 batting strike rate over 30 matches](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_strike_rate_30_matches.png?raw=true)
+
 batsman with batting strike rate in each season
 ```sql
 DELIMITER $$
@@ -167,6 +261,21 @@ DELIMITER ;
 ![2022 top 10 strike rate](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_based_on_batting_strike_rate.png?raw=true)
 ![2023 top 10 strike rate](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_batting_strike_rate.png?raw=true)
 
+
+top 10 wicket takers
+```sql
+select
+    bowlerName,
+    count(*) as total_matches,
+    sum(wickets) as total_wickets
+from fact_bowling_summary
+group by bowlerName
+order by total_wickets desc
+limit 10;
+```
+![top 10 wicket takers](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_highest_wicket_takers_in_last_3_years.png?raw=true)
+
+
 procedure top wicket takers
 ```sql
 DELIMITER $$
@@ -201,6 +310,51 @@ DELIMITER ;
 ![2021 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_bowlers.png?raw=true)
 ![2022 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_bowlers.png?raw=true)
 ![2023 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_bowlers.png?raw=true)
+
+top 10 bowling average last 3 years with 30 matches
+```sql
+WITH season_stats AS (
+    SELECT
+        fbs.bowlerName,
+        count(*) as total_mathces,
+        SUM(fbs.wickets) AS total_wickets,
+        SUM(fbs.runs) AS total_runs_conceded,
+        SUM(fbs.overs * 6) AS balls_bowled
+    FROM fact_bowling_summary fbs
+    JOIN dim_match_summary dms
+        ON fbs.match_id = dms.match_id
+    GROUP BY fbs.bowlerName
+    HAVING SUM(fbs.overs * 6) >= 60 and count(*)>30
+),
+season_average AS (
+    SELECT
+        bowlerName,
+        total_mathces,
+        total_wickets,
+        total_runs_conceded,
+        ROUND(
+            CASE WHEN total_wickets = 0 THEN NULL
+                 ELSE total_runs_conceded / total_wickets END,
+            2
+        ) AS bowling_average,
+        DENSE_RANK() OVER (
+            ORDER BY
+                CASE WHEN total_wickets = 0 THEN 999
+                     ELSE total_runs_conceded / total_wickets END
+        ) AS ranking
+    FROM season_stats
+)
+SELECT
+    bowlerName,
+    total_mathces,
+    total_wickets,
+    bowling_average
+FROM season_average
+WHERE ranking <= 10
+ORDER BY bowling_average;
+
+```
+![top 10 bowling average last 3 years](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_bowling_average_with_30_matches.png?raw=true)
 
 procedure bowling average
 ```sql
@@ -246,6 +400,56 @@ DELIMITER ;
 ![2022 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_best_bowling_Average_bowlers.png?raw=true)
 ![2023 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_best_bowling_average_bowlers.png?raw=true)
 
+top 10 economy rate last 3 years over 30 matches
+```sql
+WITH season_stats AS (
+    SELECT
+        fbs.bowlerName,
+        count(*) as total_matches,
+        SUM(fbs.wickets) AS total_wickets,
+        SUM(fbs.runs) AS total_runs_conceded,
+        SUM(fbs.overs) AS total_overs,
+        SUM(fbs.overs * 6) AS balls_bowled
+    FROM fact_bowling_summary fbs
+    JOIN dim_match_summary dms
+        ON fbs.match_id = dms.match_id
+    GROUP BY fbs.bowlerName
+    HAVING SUM(fbs.overs * 6) >= 60 and count(*)>30
+),
+season_economy AS (
+    SELECT
+        bowlerName,
+        total_matches,
+        total_wickets,
+        total_runs_conceded,
+        total_overs,
+        ROUND(
+            CASE
+                WHEN total_overs = 0 THEN NULL
+                ELSE total_runs_conceded / total_overs
+            END, 2
+        ) AS economy_rate,
+        DENSE_RANK() OVER (
+            ORDER BY
+                CASE
+                    WHEN total_overs = 0 THEN 999
+                    ELSE total_runs_conceded / total_overs
+                END
+        ) AS ranking
+    FROM season_stats
+)
+SELECT
+    bowlerName,
+    total_matches,
+    total_wickets,
+    economy_rate
+FROM season_economy
+WHERE ranking <= 10
+ORDER BY economy_rate;
+
+```
+![top 10 economy over 3 years](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_economical_bowlers_with_30_matches.png?raw=true)
+
 procedure economy rate
 ```sql
 DELIMITER $$
@@ -286,6 +490,41 @@ DELIMITER ;
 ![2023 top 10 economy](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_best_economical_bowlers.png?raw=true)
 
 
+top 10 boundary percentage over 3 years with 30 matches
+```sql
+WITH season_stats AS (
+    SELECT
+        fbs.batsmanName,
+        count(*) as total_matches,
+        SUM(fbs.runs) AS total_runs,
+        SUM(fbs.`4s`*4) AS runs_from_4s,
+        SUM(fbs.`6s`*6) AS runs_from_6s
+    FROM fact_bating_summary fbs
+    JOIN dim_match_summary dms
+         ON dms.match_id = fbs.match_id
+    GROUP BY fbs.batsmanName
+    having sum(fbs.balls)>=60 and count(*)>30
+),
+boundary_percent AS (
+    SELECT
+        batsmanName,
+        total_matches,
+        total_runs,
+        runs_from_4s,
+        runs_from_6s,
+        ROUND((runs_from_4s + runs_from_6s) / total_runs*100, 2) AS boundary_percentage,
+        DENSE_RANK() OVER (
+            ORDER BY ROUND((runs_from_4s + runs_from_6s) / total_runs*100, 2) DESC
+        ) AS ranking
+    FROM season_stats
+)
+SELECT batsmanName,total_matches,total_runs,boundary_percentage
+FROM boundary_percent
+WHERE ranking <= 10
+ORDER BY boundary_percentage DESC;
+```
+![top 10 boundary percentage](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_with_boundary_percent_last_3_years.png?raw=true)
+
 procedure boundary percentage
 ```sql
 DELIMITER $$
@@ -325,6 +564,38 @@ DELIMITER ;
 ![2022 top 10 boundary percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_with_boundary_percent.png?raw=true)
 ![2023 top 10 boundary percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_with_boundary_percent.png?raw=true)
 
+
+top 10 dot ball percentage over 3 years with 30 matches
+```sql
+with stats as (
+    select
+       fbs.bowlerName,
+       sum(fbs.wickets) as total_wickets,
+       ROUND(sum(fbs.overs*6),0) as total_balls,
+       sum(fbs.`0s`) as dot_balls
+from fact_bowling_summary fbs
+join dim_match_summary dms
+on fbs.match_id=dms.match_id
+group by fbs.bowlerName
+having sum(fbs.overs*6)>=60 and count(*)>30
+),
+dot_balls_percent as (
+    select
+           bowlerName,
+           total_wickets,
+           total_balls,
+           dot_balls,
+           round(dot_balls/total_balls*100,2) as dot_ball_percentage,
+           dense_rank() over (order by round(dot_balls/total_balls*100,2) desc) as ranking
+    from stats
+)
+select bowlerName,total_wickets,total_balls,dot_balls,dot_ball_percentage
+from dot_balls_percent
+where ranking<=10
+order by dot_ball_percentage desc;
+
+```
+![top 10 dot ball percent over 3 years](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top%2010%20dot%20ball%20percentage%20over%203%20years.png?raw=true)
 
 procedure dot ball%
 ```sql
