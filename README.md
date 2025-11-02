@@ -7,7 +7,7 @@
 - Batting Average = Total Runs Scored / Total Times Out
 - Higher average = consistent scorer.
 
-###⚡Strike Rate (SR)
+### ⚡Strike Rate (SR)
 
 #### Meaning: How fast a batter scores.
 - Strike Rate = (Total Runs / Total Balls Faced) × 100
