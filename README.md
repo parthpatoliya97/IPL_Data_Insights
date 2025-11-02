@@ -1,7 +1,7 @@
-# IPL_Data_Insights
+# IPL 2021-2023 Data Insights
 
 
-top 10 batsman last 3 years
+### 1.) Top 10 Batsman with Most Runs over last 3 Years
 ```sql
 
 select
@@ -15,7 +15,7 @@ limit 10;
 ```
 ![top 10 batsman](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_with_most_runs_last_3_years_with%20_total_matches.png?raw=true)
 
-top batsman in each season
+### 2.) Top 10 Batsman with Most Runs in each season
 ```sql
 DELIMITER $$
 
@@ -63,7 +63,7 @@ DELIMITER ;
 ![2022 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_based_on_runs.png?raw=true)
 ![2023 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_runs.png?raw=true)
 
-top 10 batsman best batting average over 30 matches
+### 3.) Top 10 Batsman with highest Batting Average in last 3 years(Total Matches>30)
 ```sql
 WITH season_stats AS (
     SELECT
@@ -103,7 +103,7 @@ ORDER BY batting_average DESC;
 ![top 10 batting average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_batting_average_30_matches.png?raw=true)
 
 
-top 10 with each season batting average
+### 4.) Top 10 Batsman with highest Batting Average in each season
 ```sql
 DELIMITER $$
 
@@ -163,7 +163,7 @@ DELIMITER ;
 ![2023](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_batting_average.png?raw=true)
 
 
-top 10 batsman batting strike rate 30 matches
+### 5.) Top 10 batsman with highest batting strike rate in last 3 years(Total Matches>30)
 ```sql
 WITH season_stats AS (
     SELECT
@@ -205,7 +205,7 @@ ORDER BY  batting_strike_rate DESC;
 ```
 ![top 10 batting strike rate over 30 matches](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_strike_rate_30_matches.png?raw=true)
 
-batsman with batting strike rate in each season
+### 6.) Top 10 batsman with highest batting strike rate in each season
 ```sql
 DELIMITER $$
 
@@ -262,7 +262,7 @@ DELIMITER ;
 ![2023 top 10 strike rate](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_batting_strike_rate.png?raw=true)
 
 
-top 10 wicket takers
+### 7.) Top 10 Wicket Takers over last 3 years
 ```sql
 select
     bowlerName,
@@ -276,7 +276,7 @@ limit 10;
 ![top 10 wicket takers](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_highest_wicket_takers_in_last_3_years.png?raw=true)
 
 
-procedure top wicket takers
+### 8.) Top 10 Wicket Takers in each season
 ```sql
 DELIMITER $$
 
@@ -311,7 +311,7 @@ DELIMITER ;
 ![2022 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_bowlers.png?raw=true)
 ![2023 top 10 bowler](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_bowlers.png?raw=true)
 
-top 10 bowling average last 3 years with 30 matches
+### 11.) top 10 best bowling average bowlers in last 3 years(Total Matches>30)
 ```sql
 WITH season_stats AS (
     SELECT
@@ -356,7 +356,7 @@ ORDER BY bowling_average;
 ```
 ![top 10 bowling average last 3 years](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_bowling_average_with_30_matches.png?raw=true)
 
-procedure bowling average
+### 12.) Top 10 best bowling average bowlers in each season
 ```sql
 DELIMITER $$
 
@@ -400,7 +400,7 @@ DELIMITER ;
 ![2022 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_best_bowling_Average_bowlers.png?raw=true)
 ![2023 top 10 bowling average](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_best_bowling_average_bowlers.png?raw=true)
 
-top 10 economy rate last 3 years over 30 matches
+### 13.) Top 10 Economical Bowlers over last 3 years(Total Matches>30) 
 ```sql
 WITH season_stats AS (
     SELECT
@@ -450,7 +450,7 @@ ORDER BY economy_rate;
 ```
 ![top 10 economy over 3 years](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_economical_bowlers_with_30_matches.png?raw=true)
 
-procedure economy rate
+### 14.) Top 10 Economical Bowlers in each seasons
 ```sql
 DELIMITER $$
 
@@ -490,7 +490,7 @@ DELIMITER ;
 ![2023 top 10 economy](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_best_economical_bowlers.png?raw=true)
 
 
-top 10 boundary percentage over 3 years with 30 matches
+### 15.) Top 10 Players with highest boundary percentage rate over last 3 years(Total Matches>30)
 ```sql
 WITH season_stats AS (
     SELECT
@@ -525,7 +525,7 @@ ORDER BY boundary_percentage DESC;
 ```
 ![top 10 boundary percentage](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_10_batsman_with_boundary_percent_last_3_years.png?raw=true)
 
-procedure boundary percentage
+### 16.) Top 10 Players with highest boundary percentage rate in each season
 ```sql
 DELIMITER $$
 
@@ -565,7 +565,7 @@ DELIMITER ;
 ![2023 top 10 boundary percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_with_boundary_percent.png?raw=true)
 
 
-top 10 dot ball percentage over 3 years with 30 matches
+### 17.) Top 10 Bowlers with most dot ball% over last 3 years(Total Matches>30)
 ```sql
 with stats as (
     select
@@ -597,7 +597,7 @@ order by dot_ball_percentage desc;
 ```
 ![top 10 dot ball percent over 3 years](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top%2010%20dot%20ball%20percentage%20over%203%20years.png?raw=true)
 
-procedure dot ball%
+### 18.) Top 10 Bowlers with most dot ball% in each season
 ```sql
 DELIMITER $$
 
@@ -636,7 +636,7 @@ DELIMITER ;
 ![2023 top 5 dot ball percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_balls_percent.png?raw=true)
 
 
-Top 4 teams based on past 3 years winning %.
+### 19.) Top 4 teams based on past 3 years winning %.
 ```sql
   WITH all_matches AS (
     SELECT
@@ -667,7 +667,7 @@ LIMIT 4;
 ```
 ![winning percent](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_4_team_by_winning_%25_last_3_years.png?raw=true)
 
-top 3 all rounders
+### 20.) Top 5 All-Rounders
 ```sql
 WITH batting AS (
     SELECT
@@ -726,7 +726,7 @@ LIMIT 5;
 ```
 ![top all rounders](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/top_5_all_rounders.png?raw=true)
 
-orange cap
+### 21.) Orange Cap Winners in each season
 ```sql
 -- orange cap
 WITH cte AS (
@@ -758,7 +758,7 @@ ORDER BY IPL_Season
 ```
 ![orange cap](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/orange_cap.png?raw=true)
 
-purple cap
+### 22.) Purple Cap Winners in each season
 ```sql
 with cte as(
 select year(str_to_date(dms.matchDate,'%b %d,%Y')) as IPL_Season,
