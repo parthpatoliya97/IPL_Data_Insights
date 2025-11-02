@@ -47,6 +47,10 @@ END$$
 DELIMITER ;
 
 ```
+![top 10 batsman in last 3 years by runs](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/Top_10_Batsamn_in_lat_3_years.png?raw=true)
+![2021 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2021_top_10_batsman_based_on_runs.png?raw=true)
+![2022 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2022_top_10_batsman_based_on_runs.png?raw=true)
+![2023 top run getter](https://github.com/parthpatoliya97/IPL_Data_Insights/blob/main/Query_Results_images/2023_top_10_batsman_based_on_runs.png?raw=true)
 
 top 10 with each season batting average
 ```sql
@@ -103,6 +107,7 @@ END$$
 DELIMITER ;
 
 ```
+![top 10batsman by batting average last 3 years]()
 
 
 batsman with batting strike rate in each season
