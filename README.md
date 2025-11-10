@@ -1,47 +1,47 @@
 # IPL 2021-2023 Data Insights
 
-## Quick Refresh to Basic Cricket Metrics :-
-### 🏏Batting Average
+### Quick Refresh to Basic Cricket Metrics :-
+#### 🏏Batting Average
 
 #### Meaning: On average, how many runs a batter scores before getting out.
 - Batting Average = Total Runs Scored / Total Times Out
 - Higher average = consistent scorer.
 
-### ⚡Strike Rate (SR)
+#### ⚡Strike Rate (SR)
 
 #### Meaning: How fast a batter scores.
 - Strike Rate = (Total Runs / Total Balls Faced) × 100
 - Higher SR = aggressive and impactful batter.
 
-### 🎯 Boundary Percentage
+#### 🎯 Boundary Percentage
 
 #### Meaning: What percentage of total runs came from fours & sixes.
 - Boundary % = (Runs from 4s & 6s / Total Runs) × 100
 - Shows how attacking a batter is.
 
-### ⛔ Dot Ball Percentage by Batter
+#### ⛔ Dot Ball Percentage by Batter
 
 #### Meaning: Percentage of balls where batter scored 0 runs.
 - Dot Ball % = (Dot Balls / Total Balls Faced) × 100
 - Lower dot-ball % means better strike rotation.
 
-### 🏹 Bowling Average
+#### 🏹 Bowling Average
 
 #### Meaning: How many runs a bowler concedes per wicket taken.
 - Bowling Average = Runs Conceded / Wickets Taken
 - Lower average = better wicket-taking bowler.
 
-### 💰 Economy Rate
+#### 💰 Economy Rate
 
 #### Meaning: Runs conceded per over by a bowler.
 - Economy Rate = Runs Conceded / Overs Bowled
 - Shows how economical the bowler is. Lower is better.
 
-### 🟧 Orange Cap
+#### 🟧 Orange Cap
 
 #### Meaning: Batter with the most total runs in a season.
 
-### 🟪 Purple Cap
+#### 🟪 Purple Cap
 
 #### Meaning: Bowler with most wickets in a season.
 
